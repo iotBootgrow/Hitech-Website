@@ -95,12 +95,44 @@
         .logo {
             height: 60px;
             width: auto;
+            filter: brightness(0) invert(1);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
         }
         
         .company-name {
             font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 1px;
+        }
+        
+        /* Logo SVG inline */
+        .logo-svg {
+            width: 60px;
+            height: 60px;
+        }
+        
+        /* Floating animation for hero section */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Pulse animation for buttons */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
         }
         
         .nav-links {
@@ -569,6 +601,24 @@
         <nav>
             <div class="container">
                 <div class="logo-section">
+                    <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Eye outline -->
+                        <ellipse cx="100" cy="100" rx="90" ry="50" fill="none" stroke="white" stroke-width="4"/>
+                        <!-- Upper eyelid -->
+                        <path d="M 10 100 Q 100 40, 190 100" fill="none" stroke="white" stroke-width="4"/>
+                        <!-- Lower eyelid -->
+                        <path d="M 10 100 Q 100 160, 190 100" fill="none" stroke="white" stroke-width="4"/>
+                        <!-- Pupil circle -->
+                        <circle cx="100" cy="100" r="35" fill="white"/>
+                        <!-- Inner pupil -->
+                        <circle cx="100" cy="100" r="20" fill="#1a1a2e"/>
+                        <!-- Letter H -->
+                        <text x="100" y="110" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">H</text>
+                        <!-- Lines at bottom -->
+                        <line x1="30" y1="165" x2="170" y2="165" stroke="white" stroke-width="3"/>
+                        <line x1="40" y1="175" x2="160" y2="175" stroke="white" stroke-width="3"/>
+                        <line x1="50" y1="185" x2="150" y2="185" stroke="white" stroke-width="3"/>
+                    </svg>
                     <span class="company-name">HITECH SECURITY ZONE</span>
                 </div>
                 <button class="menu-toggle" onclick="toggleMenu()">☰</button>
@@ -587,11 +637,11 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1>PRIORITIZE</h1>
+            <h1 class="floating">PRIORITIZE</h1>
             <p class="hero-tagline">SAFE LIVING</p>
             <p>Your Complete Security Solution</p>
             <div class="cta-buttons">
-                <a href="#contact" class="btn btn-primary">Get A Quote</a>
+                <a href="#contact" class="btn btn-primary pulse">Get A Quote</a>
                 <a href="#products" class="btn btn-secondary">Our Products</a>
             </div>
         </div>
@@ -843,6 +893,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
                     </form>
+                    <div id="form-status" style="margin-top: 1rem; padding: 1rem; border-radius: 5px; display: none;"></div>
+                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 0.5rem;">💡 <strong>Quick Contact Options:</strong></p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+                            ✉️ Email us directly: <a href="mailto:hitech.securityzone@gmail.com" style="color: var(--accent-color);">hitech.securityzone@gmail.com</a><br>
+                            📞 Call us: <a href="tel:05224312733" style="color: var(--accent-color);">0522-4312733</a> | <a href="tel:9044800007" style="color: var(--accent-color);">9044800007</a><br>
+                            💬 WhatsApp: <a href="https://wa.me/919044800007" target="_blank" style="color: var(--accent-color);">Chat with us</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1110,23 +1169,40 @@
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
+            const formStatus = document.getElementById('form-status');
+            
+            // Show loading message
+            formStatus.style.display = 'block';
+            formStatus.style.background = 'rgba(255,255,255,0.2)';
+            formStatus.style.color = 'white';
+            formStatus.innerHTML = '📤 Preparing your message...';
             
             // Create mailto link
             const subject = encodeURIComponent('Website Inquiry from ' + name);
             const body = encodeURIComponent(
                 'Name: ' + name + '\n' +
                 'Email: ' + email + '\n' +
-                'Phone: ' + phone + '\n' +
-                'Message: ' + message
+                'Phone: ' + phone + '\n\n' +
+                'Message:\n' + message + '\n\n' +
+                '---\n' +
+                'Sent from: www.hitechsecurityzone.com'
             );
             
-            window.location.href = 'mailto:hitech.securityzone@gmail.com?subject=' + subject + '&body=' + body;
+            // Try to open email client
+            const mailtoLink = 'mailto:hitech.securityzone@gmail.com?subject=' + subject + '&body=' + body;
+            window.location.href = mailtoLink;
             
             // Show success message
-            alert('Thank you for your inquiry! Your default email client will open. If it doesn\'t, please email us directly at hitech.securityzone@gmail.com');
+            setTimeout(() => {
+                formStatus.style.background = 'rgba(76, 175, 80, 0.3)';
+                formStatus.innerHTML = '✅ <strong>Email client opened!</strong><br>If your email app didn\'t open, you can:<br>• Email us at: hitech.securityzone@gmail.com<br>• Call: 0522-4312733 or 9044800007<br>• WhatsApp: +91 9044800007';
+            }, 500);
             
-            // Reset form
-            event.target.reset();
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                event.target.reset();
+                formStatus.style.display = 'none';
+            }, 8000);
         }
 
         // Smooth scroll behavior
